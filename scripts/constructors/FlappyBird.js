@@ -1,7 +1,6 @@
 /* global canvas WIDTH HEIGHT ctx imagemanager audiomanager */
 
 function FlappyBird(flapPower, gravity) {
-    
     this.w = 34;
     this.h = 24;
     this.x = 384 - this.w / 2;
@@ -12,25 +11,22 @@ function FlappyBird(flapPower, gravity) {
     this.gravity = gravity;
     this.rotate = false;
     this.onGround = false;
-    
+
     var rotateAnimation = 0;
     var imageAnimation = 0;
     var positionOfWing = "up";
-    
+
     this.flap = function () {
-        
         this.vy = -this.flapPower;
         rotateAnimation = 0;
         audiomanager.play("wing");
-        
     };
-    
+
     this.update = function () {
-        
         // Update position
         this.vy += this.gravity;
         this.y += this.vy;
-        
+
         // Handles when the bird touches the ground (which is at y: 400)
         if (this.y + this.h > 400) {
             if (!this.onGround) {
@@ -40,11 +36,9 @@ function FlappyBird(flapPower, gravity) {
             this.vy = 0;
             this.y = 400 - this.h;
         }
-        
     };
-    
+
     this.render = function () {
-        
         // Flappy bird rotation
         var rotation = 0;
         if (this.rotate) {
@@ -57,7 +51,7 @@ function FlappyBird(flapPower, gravity) {
                 rotation = 90;
             }
         }
-        
+
         // Flappy bird image animation
         if (++imageAnimation >= 4 && !this.onGround) {
             imageAnimation = 0;
@@ -67,14 +61,12 @@ function FlappyBird(flapPower, gravity) {
                 case "down": positionOfWing = "up"; break;
             }
         }
-        
+
         // Draw flappy bird
         ctx.save();
         ctx.translate(WIDTH / 2, this.y + this.h / 2);
         ctx.rotate(rotation * Math.PI / 180);
         ctx.drawImage(imagemanager.get(this.color + "bird-" + positionOfWing + "flap"), -this.w / 2, -this.h / 2, this.w, this.h);
         ctx.restore();
-        
     };
-    
 }

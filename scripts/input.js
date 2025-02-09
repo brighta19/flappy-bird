@@ -7,6 +7,7 @@ function InputManager() {
         right: false
     };
     var keys = [];
+
     this.initialize = function (elem = window) {
         elem.addEventListener("mousemove", function (e) {
             mouse.x = e.clientX - (elem.offsetLeft || 0);
@@ -37,6 +38,7 @@ function InputManager() {
             keys.splice(keys.indexOf(e.keyCode), 1);
         });
     };
+
     this.isMouseBtnDown = function (side) {
         switch (side) {
             case "left": return mouse.left;
@@ -45,9 +47,11 @@ function InputManager() {
             default: return mouse.left || mouse.right || mouse.middle;
         }
     };
+
     this.getMousePosition = function () {
         return {x: mouse.x, y: mouse.y};
     };
+
     this.isKeyDown = function (keycode) {
         if (!keycode)
             return keys.length > 0;

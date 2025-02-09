@@ -8,7 +8,7 @@ function Pipe(separation, random, relY) {
     this.separationCenter = (random) ? ((Math.random() * (separation / 2) - (separation / 4)) + relY) : 200;
     //this.separationCenter = (random) ? ((50 + separation / 2) + Math.random() * (300 - separation)) : 200;
     this.remove = false;
-    
+
     if (this.separationCenter < 80)
         this.separationCenter = 80;
     else if (this.separationCenter > 320)
@@ -24,7 +24,7 @@ Pipe.prototype.isCollidingWith = function (obj) {
 
 Pipe.prototype.update = function (speed) {
     this.x -= speed;
-    
+
     if (this.x + this.w <= 0)
         this.remove = true;
 };
