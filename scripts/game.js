@@ -1,5 +1,6 @@
 /* global canvas imagemanager audiomanager inputmanager TitleScreen GameScreen */
 var currentScreen = new TitleScreen();
+var previousDate = Date.now();
 
 function main() {
     switch(currentScreen.changeScreenTo) {
@@ -12,8 +13,12 @@ function main() {
             break;
     }
 
-    currentScreen.update();
-    currentScreen.render();
+    var currentDate = Date.now();
+    var dt = (currentDate - previousDate) / 1000;
+    previousDate = currentDate;
+
+    currentScreen.update(dt);
+    currentScreen.render(dt);
 
     window.requestAnimationFrame(main);
 }

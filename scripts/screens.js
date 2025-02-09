@@ -19,11 +19,11 @@ function TitleScreen() {
         offsetY: 20
     };
     var groundX = 0;
-    var speed = 5;
+    var speed = 300;
     var pressed = false;
     var pressedBefore = false;
 
-    this.update = function () {
+    this.update = function (dt) {
         pressed = inputmanager.isMouseBtnDown("left") || inputmanager.isKeyDown();
 
         if (pressedBefore && !pressed) {
@@ -31,7 +31,7 @@ function TitleScreen() {
             audp("swoosh");
         }
 
-        groundX -= speed;
+        groundX -= speed * dt;
 
         if (continueToGame) {
             if (fadeToBlackAnimation >= 100)
@@ -41,16 +41,16 @@ function TitleScreen() {
         pressedBefore = pressed;
     };
 
-    this.render = function () {
+    this.render = function (dt) {
         title.sizeModifier = (pressed) ? 0.9 : 1;
 
         if (progress >= 100)
             progress = 0;
         else
-            progress += speed / 4;
+            progress += (speed / 4) * dt;
 
         if (continueToGame)
-            fadeToBlackAnimation += 8;
+            fadeToBlackAnimation += 480 * dt;
 
         title.x = (WIDTH / 2) - (title.w * title.sizeModifier / 2); // 368 + 16 + 68
         title.y = ((HEIGHT - 112) / 2) - (title.h * title.sizeModifier / 2);
@@ -100,9 +100,9 @@ function GameScreen() {
 
     // Variables that change the way the game is
     var ai = false;
-    var gameSpeed = 8;
-    var gravity = 0.3;
-    var flapPower = 4;
+    var gameSpeed = 480;
+    var gravity = 1080;
+    var flapPower = 240;
     var pipeSeparation = 70;
     var pipeGap = 200;
     var randomPipes = true;
@@ -132,7 +132,7 @@ function GameScreen() {
     var toggleDay = false;
 
     // Game update
-    this.update = function () {
+    this.update = function (dt) {
         if (fadeToBlackAnimation >= 100)
             this.toScreen("gamescreen");
 
@@ -180,11 +180,11 @@ function GameScreen() {
         //----------------------------------------------- AI END
 
         // Move the ground
-        groundX -= gameSpeed;
+        groundX -= gameSpeed * dt;
 
         // Update old pipes' position and possibly remove them
         for (let i = pipes.length - 1; i >= 0; i--) {
-            pipes[i].update(gameSpeed);
+            pipes[i].update(gameSpeed, dt);
             if (pipes[i].remove) {
                 pipes.splice(i, 1);
             }
@@ -197,7 +197,7 @@ function GameScreen() {
 
         // Update the position of flappy bird
         if (playerStarted) {
-            flappybird.update();
+            flappybird.update(dt);
         }
 
 
@@ -207,7 +207,7 @@ function GameScreen() {
         }
 
         if (flappybird.onGround)
-            scorecounter.animateToCenter();
+            scorecounter.animateToCenter(dt);
 
         for (let i = 0; i < pipes.length; i++) {
             if (pipes[i].isCollidingWith(flappybird)) {
@@ -227,21 +227,21 @@ function GameScreen() {
     };
 
     // Game render
-    this.render = function () {
+    this.render = function (dt) {
         // Fade from black animation
         if (fadeFromBlackAnimation < 100)
-            fadeFromBlackAnimation += 8;
+            fadeFromBlackAnimation += 480 * dt;
 
         if (restart && fadeToBlackAnimation < 100)
-            fadeToBlackAnimation += 8;
+            fadeToBlackAnimation += 480 * dt;
 
         // White flash screen opacity
         if (playerLost && flashOpacity > 0)
-            flashOpacity -= 0.05;
+            flashOpacity -= 3 * dt;
 
         // Dark screen opacity
         if (flappybird.onGround && darkScreenOpacity < 0.4)
-            darkScreenOpacity += 0.04;
+            darkScreenOpacity += 2.4 * dt;
 
         if (scorecounter.score != 0 && scorecounter.score % 20 == 0 && !toggleDay) {
             toggleDay = true;
@@ -250,7 +250,8 @@ function GameScreen() {
         }
 
         if (toggleDay) {
-            if (++dayTransitionAnimation >= 100) {
+            dayTransitionAnimation += 60 * dt;
+            if (dayTransitionAnimation >= 100) {
                 toggleDay = false;
             }
 
@@ -289,7 +290,7 @@ function GameScreen() {
         ctx.drawImage(img("base"), groundX % 24 + 576, 400);
 
         // Draw flappy bird
-        flappybird.render();
+        flappybird.render(dt);
 
         // Draws the white flash screen
         ctx.fillStyle = "rgba(255, 255, 255, " + flashOpacity + ")";

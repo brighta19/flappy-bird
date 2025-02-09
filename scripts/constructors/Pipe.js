@@ -22,8 +22,8 @@ Pipe.prototype.isCollidingWith = function (obj) {
         obj.x + obj.w > this.x);
 };
 
-Pipe.prototype.update = function (speed) {
-    this.x -= speed;
+Pipe.prototype.update = function (speed, dt) {
+    this.x -= speed * dt;
 
     if (this.x + this.w <= 0)
         this.remove = true;

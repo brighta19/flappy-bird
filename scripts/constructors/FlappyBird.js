@@ -22,10 +22,10 @@ function FlappyBird(flapPower, gravity) {
         audiomanager.play("wing");
     };
 
-    this.update = function () {
+    this.update = function (dt) {
         // Update position
-        this.vy += this.gravity;
-        this.y += this.vy;
+        this.vy += this.gravity * dt;
+        this.y += this.vy * dt;
 
         // Handles when the bird touches the ground (which is at y: 400)
         if (this.y + this.h > 400) {
@@ -38,14 +38,14 @@ function FlappyBird(flapPower, gravity) {
         }
     };
 
-    this.render = function () {
+    this.render = function (dt) {
         // Flappy bird rotation
         var rotation = 0;
         if (this.rotate) {
             if (rotateAnimation < 100) {
                 rotation = Math.sin(rotateAnimation / 100 * Math.PI / 2) * 135 - 45;
                 if (!this.onGround)
-                    rotateAnimation += 5 * gravity;
+                    rotateAnimation += (5 * gravity / 60) * dt;
             }
             else {
                 rotation = 90;
@@ -53,7 +53,8 @@ function FlappyBird(flapPower, gravity) {
         }
 
         // Flappy bird image animation
-        if (++imageAnimation >= 4 && !this.onGround) {
+        imageAnimation += 60 * dt;
+        if (imageAnimation >= 4 && !this.onGround) {
             imageAnimation = 0;
             switch (positionOfWing) {
                 case "up": positionOfWing = "mid"; break;

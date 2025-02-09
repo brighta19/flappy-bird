@@ -15,9 +15,9 @@ function ScoreCounter(highScore) {
         audiomanager.play("point");
     };
 
-    this.animateToCenter = function () {
+    this.animateToCenter = function (dt) {
         if (offsetScoreAnimation < 100)
-            offsetScoreAnimation += 8;
+            offsetScoreAnimation += 480 * dt;
         else
             this.animationDone = true;
     };
